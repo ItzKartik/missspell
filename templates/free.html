@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Miss Spell</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Pattaya&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=KoHo" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'KoHo';
+        }
+
+        a {
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+        }
+
+        a:hover {
+            color: white !important;
+            font-weight: 800;
+            text-decoration: none;
+        }
+
+        .fc {
+            border: 1.5px solid #12ff00;
+            width: 100%;
+            height: 50px;
+            color: #12ff00;
+            border-radius: 50px;
+            background: linear-gradient(to right, #12ff00, #12ff00);
+            background: transparent;
+        }
+
+        .fc::placeholder {
+            font-weight: 600;
+            color: #000;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            background: transparent;
+        }
+
+        .updated_text {
+            font-weight: 700;
+            color: #12ff00;
+        }
+
+        .btn,
+        a {
+            color: #000 !important;
+            font-weight: 600;
+        }
+
+        .btn:hover {
+            color: white !important;
+            background-color: #12ff00 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container table_part text-center mx-auto" style="margin-bottom: 0 !important; display: none;">
+        <div class="text-left mr-auto">
+            <p>
+            <h3>Total Errors : <span class="nos" style="font-size: 3rem; color: #12ff00;"></span></h3>
+            <br><br>
+            <button onclick="location.reload();" class="btn btn-outline-success">Go Back</button>
+            <br><br>
+        </div>
+    </div>
+    <div class="container main_part mx-auto text-center">
+        <h1 style="font-weight: 600;">Miss Spell</h1>
+        <small class="errors" style="color: red; font-weight: 800;"></small>
+        <br><br>
+        <form class="col-md-6 text-center mx-auto form">
+            <div class="form-group">
+                <input type="text" class="form-control fc" name="web_url" placeholder="Insert your web page">
+            </div>
+            <button type="submit" class="btn btn-outline-success">Submit</button>
+        </form>
+    </div>
+    <style>
+        .loader {
+            position: relative;
+            height: 100px;
+            width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #12ff00;
+            /* margin: 30px 30px; */
+            /* float: left; */
+        }
+
+        .loader:before {
+            content: "";
+            background: white;
+            position: absolute;
+            z-index: 100;
+            width: 98px;
+            height: 98px;
+            border-radius: 50%;
+            margin: auto auto;
+        }
+
+        progress::-moz-progress-bar {
+            background: transparent;
+        }
+
+        progress::-webkit-progress-bar {
+            background: transparent;
+        }
+
+        progress::-moz-progress-value {
+            background: #12ff00;
+        }
+
+        progress::-webkit-progress-value {
+            background: #12ff00;
+        }
+
+        .circle {
+            border-radius: 100%;
+            overflow: hidden;
+            padding: 0;
+        }
+
+        .spin {
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+    <div class="col-sm-12 text-center col-md-6 mx-auto progress-part" style="left: 0; display: none;">
+        <progress max="100" value="95" class="mx-auto text-center spin circle loader"></progress>
+        <br>
+        <div class="update_text"></div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/typo-js@1.2.0/typo.min.js"></script>
+    <script>
+        var nos_of_errors = 0;
+
+        function make_string(arr) {
+            string = '';
+            for (var l = 0; l < arr.length; l++) {
+                string = string + arr[l] + ', ';
+            }
+            return string;
+        }
+
+        function check_spell(data) {
+            var is_spelled_correctly = dictionary.check(data);
+            if (is_spelled_correctly !== true) {
+                nos_of_errors += 1;
+                $('.nos').html(nos_of_errors).fadeIn('slow');
+            }
+        }
+
+        function remove_duplicates(str) {
+            var result = [];
+            for (var i = 0; i < str.length; i++) {
+                if (result.indexOf(str[i]) == -1) result.push(str[i]);
+            }
+            return result
+        }
+
+        function filter_data(data) {
+            str = data.replace(/[_\W]+/g, " ")
+            str = str.replace(/[0-9]/g, " ");
+            str = str.split(' ')
+            str = remove_duplicates(str);
+            $('.table_part').fadeIn('slow');
+            for (let i = 0; i < str.length; i++) {
+                if (str[i].length < 5) {
+                    continue;
+                } else {
+                    check_spell(str[i]);
+                }
+            }
+        }
+
+        var dictionary = new Typo("en_US", false, false, { dictionaryPath: "https://cdn.jsdelivr.net/npm/typo-js@1.2.0/dictionaries" });
+        var updating = null;
+
+        $('.form').submit(function (e) {
+            e.preventDefault();
+            changeText();
+            $('.main_part').hide();
+            $('.progress-part').fadeIn('slow');
+            $.ajax({
+                url: "{% url 'check_spell' %}",
+                type: 'POST',
+                data: {
+                    web_url: $('.fc').val()
+                },
+                success: function (data) {
+                    if (data == 0) {
+                        $('.progress-part').hide();
+                        $('.table_part').fadeIn('slow');
+                        $('.nos').html("0");
+                    }
+                    else if (data == 'error_in_url') {
+                        $('.progress-part').hide();
+                        $('.main_part').fadeIn('slow');
+                        $('.errors').html("Invalid URL, Please Try Again...");
+                    }
+                    else {
+                        if (count !== 5) {
+                            var t = (5 - count)*2500;
+                            console.log("Wait for : "+ t);
+                            setTimeout(
+                                function () {
+                                    $('.progress-part').hide();
+                                    filter_data(data);
+                                }, parseInt(t));
+                        }
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+        });
+
+
+
+        var count = 0;
+        let text = [
+            'Loading Results',
+            'Connecting to Website',
+            'Deploying Software',
+            'Running Miss Spell',
+            'Checking for Errors'
+        ];
+        function changeText() {
+            count = 0;
+            var chan = setInterval(function () {
+                if (count == 5) {
+                    clearInterval(chan);
+                } else {
+                    count++;
+                    $(".update_text").fadeOut(400, function () {
+                        $(this).text(text[count % text.length]).fadeIn(400);
+                    });
+                }
+            }, 2000);
+        }
+    </script>
+</body>
+
+</html>
