@@ -308,15 +308,15 @@
                         else {
                             if (count !== 5) {
                                 $('.table').html('<tr><td style="font-size: 1.2rem; font-weight: 800;"><b>Errors Found</b></td><td style="font-size: 1.2rem;"></td><td style="font-size: 1.2rem;"><b>Suggestions</b></td></tr>');
-                                $('.progress-part').hide();
-                                filter_data(data);
-                                // var t = (5 - count)*2500;
-                                // console.log("Wait for : "+ t);
-                                // setTimeout(
-                                //     function () {
-                                //         $('.progress-part').hide();
-                                //         filter_data(data);
-                                //     }, parseInt(t));
+                                // $('.progress-part').hide();
+                                // filter_data(data);
+                                var t = (5 - count)*2500;
+                                console.log("Wait for : "+ t);
+                                setTimeout(
+                                    function () {
+                                        $('.progress-part').hide();
+                                        filter_data(data);
+                                    }, parseInt(t));
                             }
                         }
                     },
