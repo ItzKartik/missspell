@@ -15,8 +15,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=KoHo" rel="stylesheet">
     <style>
+        html,
         body {
-            font-family: 'KoHo';
+            font-family: 'KoHo' !important;
         }
 
         a {
@@ -32,17 +33,17 @@
         }
 
         .fc {
-            border: 1.5px solid #12ff00;
+            border: 1.5px solid #008cff;
             width: 100%;
             height: 50px;
-            color: #12ff00;
+            color: #008cff;
             border-radius: 50px;
-            background: linear-gradient(to right, #12ff00, #12ff00);
+            background: linear-gradient(to right, #008cff, #008cff);
             background: transparent;
         }
 
         .fc::placeholder {
-            font-weight: 600;
+            font-weight: 500;
             color: #000;
             font-size: 1rem;
         }
@@ -51,9 +52,14 @@
             background: transparent;
         }
 
-        .updated_text {
-            font-weight: 700;
-            color: #12ff00;
+        td {
+            font-weight: 400;
+        }
+
+        .update_text {
+            font-weight: 500;
+            font-size: 1.2rem;
+            color: #000;
         }
 
         .btn,
@@ -64,49 +70,17 @@
 
         .btn:hover {
             color: white !important;
-            background-color: #12ff00 !important;
+            background-color: #008cff !important;
         }
-    </style>
-</head>
 
-<body>
-    <div class="container table_part text-center mx-auto" style="margin-bottom: 0 !important; display: none;">
-        <div class="text-left mr-auto">
-            <p>
-            <h3>Total Errors : <span class="nos" style="font-size: 3rem; color: #12ff00;"></span></h3>
-            <small style="color: #12ff00; font-weight: 600; font-size: 15px;">*Some results may differ for a human. My
-                programming is improving with every
-                use.</small>
-            <br><br><br><br>
-            <div class="col-md-6 mx-auto text-left table-responsive">
-                <table class="table">
-                </table>
-            </div>
-            <br><br>
-            <button onclick="location.reload();" class="btn btn-outline-success">Go Back</button>
-            <br><br>
-        </div>
-    </div>
-    <div class="container main_part mx-auto text-center">
-        <h1 style="font-weight: 600;">Miss Spell</h1>
-        <small class="errors" style="color: red; font-weight: 800;"></small>
-        <br><br>
-        <form class="col-md-6 text-center mx-auto form">
-            <div class="form-group">
-                <input type="text" class="form-control fc" name="web_url" placeholder="Insert your web page">
-            </div>
-            <button type="submit" class="btn btn-outline-success">Submit</button>
-        </form>
-    </div>
-    <style>
         .loader {
             position: relative;
-            height: 100px;
-            width: 100px;
+            height: 150px;
+            width: 150px;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: #12ff00;
+            color: #008cff;
             /* margin: 30px 30px; */
             /* float: left; */
         }
@@ -116,8 +90,8 @@
             background: white;
             position: absolute;
             z-index: 100;
-            width: 98px;
-            height: 98px;
+            width: 148px;
+            height: 148px;
             border-radius: 50%;
             margin: auto auto;
         }
@@ -131,11 +105,11 @@
         }
 
         progress::-moz-progress-value {
-            background: #12ff00;
+            background: #008cff;
         }
 
         progress::-webkit-progress-value {
-            background: #12ff00;
+            background: #008cff;
         }
 
         .circle {
@@ -154,7 +128,39 @@
             }
         }
     </style>
-    <div class="col-sm-12 text-center col-md-6 mx-auto progress-part" style="top: 5px; left: 0; display: none;">
+</head>
+
+<body>
+    <div class="container table_part text-center mx-auto"
+        style="margin-top: 20px; margin-bottom: 0 !important; display: none;">
+        <div class="text-left mr-auto">
+            <p>
+            <h3>Total Errors : <span class="nos" style="font-size: 3rem; color: #008cff;"></span></h3>
+            <small style="color: #008cff; font-weight: 600; font-size: 15px;">*Some results may differ for a human. My
+                programming is improving with every
+                use.</small>
+            <br><br><br><br>
+            <div class="col-md-6 mx-auto text-left table-responsive">
+                <table class="table">
+                </table>
+            </div>
+            <br><br>
+            <button onclick="location.reload();" class="btn btn-outline-primary"s>Go Back</button>
+            <br><br>
+        </div>
+    </div>
+    <div class="container main_part mx-auto text-center" style="margin-top: 20px;">
+        <h1 style="font-weight: 600;">Miss Spell</h1>
+        <small class="errors" style="color: red; font-weight: 800;"></small>
+        <br><br>
+        <form class="col-md-6 text-center mx-auto form">
+            <div class="form-group">
+                <input type="text" class="form-control fc" name="web_url" placeholder="Insert your web page">
+            </div>
+            <button type="submit" class="btn btn-outline-primary">Submit</button>
+        </form>
+    </div>
+    <div class="col-sm-12 text-center col-md-6 mx-auto progress-part" style="margin-top: 20px; left: 0; display: none;">
         <progress max="100" value="95" class="mx-auto text-center spin circle loader"></progress>
         <br>
         <div class="update_text"></div>
@@ -162,7 +168,7 @@
     <script src="https://cdn.jsdelivr.net/npm/typo-js@1.2.0/typo.min.js"></script>
     <script>
         var nos_of_errors = 0;
-
+        var url, str;
         function make_string(arr) {
             string = '';
             for (var l = 0; l < arr.length; l++) {
@@ -176,11 +182,11 @@
             if (is_spelled_correctly !== true) {
                 nos_of_errors += 1;
                 var array_of_suggestions = dictionary.suggest(data);
-                if (array_of_suggestions.length == 0){
+                if (array_of_suggestions.length == 0) {
                     corrected = "No Suggestions Found";
                 }
-                else{
-                    corrected = make_string(array_of_suggestions);    
+                else {
+                    corrected = make_string(array_of_suggestions);
                 }
                 $('.table').append('<tr><td>' + data + '</td><td>:</td><td>' + corrected + '</td></tr>');
                 $('.nos').html(nos_of_errors).fadeIn('slow');
@@ -195,35 +201,64 @@
             return result
         }
 
+        function check(d){
+            if (d.length < 4) {
+                return false;
+            }
+            else if (d.toLowerCase() === url) {
+                return false;
+            }
+            else if (d.includes('.com') == true) {
+                return false;
+            } else if (/^[a-zA-Z0-9- ]*$/.test(d) == false){
+                return "yes";
+            }
+            else if (/^\d+$/.test(d)) {
+                return false;
+            }else{
+                return true;
+            }
+        }
+
         function filter_data(data) {
-            str = data.replace(/[_\W]+/g, " ")
-            str = str.replace(/[0-9]/g, " ");
-            str = str.split(' ')
+            str = data.split(' ');
+            str = str.filter(entry => /\S/.test(entry));
             str = remove_duplicates(str);
-            $('.table_part').fadeIn('slow');
             for (let i = 0; i < str.length; i++) {
-                if (str[i].length < 5) {
-                    continue;
-                } else {
-                    check_spell(str[i]);
+                var d = str[i];
+                f = check(d)
+                if(f == "yes") {
+                    s = d.replace(/[_\W]+/g, "");
+                    v = check(s)
+                    if (v == true){
+                        check_spell(s);
+                    }
+                }else if (f == true){
+                    check_spell(d);
                 }
             }
+            $('.table_part').fadeIn('slow');
+        }
+
+        function strip_url(url) {
+            url = url.replace(/^(?:https?:\/\/)?(?:www\.)?/i, "").split('/')[0];
+            return url.split('.')[0];
         }
 
         var dictionary = new Typo("en_US", false, false, { dictionaryPath: "https://cdn.jsdelivr.net/npm/typo-js@1.2.0/dictionaries" });
         var updating = null;
-        var speed  = 2500;
-        var fade_out, fade_in = 400;
+
         $('.form').submit(function (e) {
             e.preventDefault();
             changeText();
+            url = $('.fc').val();
             $('.main_part').hide();
             $('.progress-part').fadeIn('slow');
             $.ajax({
                 url: "{% url 'check_spell' %}",
                 type: 'POST',
                 data: {
-                    web_url: $('.fc').val()
+                    web_url: url
                 },
                 success: function (data) {
                     if (data == 0) {
@@ -238,9 +273,13 @@
                     }
                     else {
                         if (count !== 5) {
-                            $('.table').html('<tr><td style="font-size: 1.2rem;"><b>Errors Found</b></td><td style="font-size: 1.2rem;"></td><td style="font-size: 1.2rem;"><b>Suggestions</b></td></tr>');
-                            var t = (5 - count)*2500;
-                            console.log("Wait for : "+ t);
+                            url = strip_url(url);
+
+                            $('.table').html('<tr><td style="font-size: 1.2rem; font-weight: 800;"><b>Errors Found</b></td><td style="font-size: 1.2rem;"></td><td style="font-size: 1.2rem;"><b>Suggestions</b></td></tr>');
+                            // $('.progress-part').hide();
+                            // filter_data(data);
+                            var t = (5 - count) * 2500;
+                            console.log("Wait for : " + t);
                             setTimeout(
                                 function () {
                                     $('.progress-part').hide();
@@ -271,13 +310,12 @@
                 if (count == 5) {
                     clearInterval(chan);
                 } else {
-                    console.log("Speed: "+speed);
                     count++;
-                    $(".update_text").fadeOut(fade_out, function () {
-                        $(this).text(text[count % text.length]).fadeIn(fade_in);
+                    $(".update_text").fadeOut(400, function () {
+                        $(this).text(text[count % text.length]).fadeIn(400);
                     });
                 }
-            }, speed);
+            }, 2000);
         }
     </script>
 </body>

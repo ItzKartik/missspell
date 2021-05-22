@@ -12,9 +12,9 @@ hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML,
        'Accept-Language': 'en-US,en;q=0.8',
        'Connection': 'keep-alive'}
 
-@xframe_options_exempt
-def index(request):
-    return render(request, 'index.html')
+# @xframe_options_exempt
+# def index(request):
+#     return render(request, 'index.html')
 
 @xframe_options_exempt
 def account(request):
@@ -36,9 +36,6 @@ def check_spell(request):
             else:
                 soup = BeautifulSoup(data, "html.parser")
                 sentence = " ".join(soup.strings)
-                # with open("./r.txt", "w+") as f:
-                #     f.write(sentence)
-                #     f.close()
             return HttpResponse(sentence)
         except (EOFError, KeyError):
             return HttpResponse("0")

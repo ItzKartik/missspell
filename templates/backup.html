@@ -168,7 +168,7 @@
     <script src="https://cdn.jsdelivr.net/npm/typo-js@1.2.0/typo.min.js"></script>
     <script>
         var nos_of_errors = 0;
-        var url, str;
+        var url;
         function make_string(arr) {
             string = '';
             for (var l = 0; l < arr.length; l++) {
@@ -181,14 +181,6 @@
             var is_spelled_correctly = dictionary.check(data);
             if (is_spelled_correctly !== true) {
                 nos_of_errors += 1;
-                // var array_of_suggestions = dictionary.suggest(data);
-                // if (array_of_suggestions.length == 0) {
-                //     corrected = "No Suggestions Found";
-                // }
-                // else {
-                //     corrected = make_string(array_of_suggestions);
-                // }
-                // $('.table').append('<tr><td>' + data + '</td><td>:</td><td>' + corrected + '</td></tr>');
                 $('.nos').html(nos_of_errors).fadeIn('slow');
             }
         }
@@ -201,39 +193,26 @@
             return result
         }
 
-        function check(d){
-            if (d.length < 4) {
-                return false;
-            }
-            else if (d.toLowerCase() === url) {
-                return false;
-            }
-            else if (d.includes('.com') == true) {
-                return false;
-            } else if (/^[a-zA-Z0-9- ]*$/.test(d) == false){
-                return "yes";
-            }
-            else if (/^\d+$/.test(d)) {
-                return false;
-            }else{
-                return true;
-            }
-        }
-
         function filter_data(data) {
-            str = data.split(' ');
-            str = str.filter(entry => /\S/.test(entry));
+            str = data.replace(/[_\W]+/g, " ");
+            str = str.replace(/[0-9]/g, " ");
+            str = str.split(' ')
             str = remove_duplicates(str);
             for (let i = 0; i < str.length; i++) {
                 var d = str[i];
-                f = check(d)
-                if(f == "yes") {
-                    s = d.replace(/[_\W]+/g, "");
-                    v = check(s)
-                    if (v == true){
-                        check_spell(s);
-                    }
-                }else if (f == true){
+                if (d.length < 4) {
+                    continue;
+                }
+                else if (d.toLowerCase() === url) {
+                    continue;
+                }
+                else if (d.includes('.com') == true) {
+                    console.log(d);
+                    continue;
+                }
+                else if (/^\d+$/.test(d)) {
+                    continue;
+                } else {
                     check_spell(d);
                 }
             }
@@ -275,16 +254,15 @@
                         if (count !== 5) {
                             url = strip_url(url);
 
-                            // $('.table').html('<tr><td style="font-size: 1.2rem; font-weight: 800;"><b>Errors Found</b></td><td style="font-size: 1.2rem;"></td><td style="font-size: 1.2rem;"><b>Suggestions</b></td></tr>');
-                            // $('.progress-part').hide();
-                            // filter_data(data);
-                            var t = (5 - count) * 2500;
-                            console.log("Wait for : " + t);
-                            setTimeout(
-                                function () {
-                                    $('.progress-part').hide();
-                                    filter_data(data);
-                                }, parseInt(t));
+                            $('.progress-part').hide();
+                            filter_data(data);
+                            // var t = (5 - count) * 2500;
+                            // console.log("Wait for : " + t);
+                            // setTimeout(
+                            //     function () {
+                            //         $('.progress-part').hide();
+                            //         filter_data(data);
+                            //     }, parseInt(t));
                         }
                     }
                 },
