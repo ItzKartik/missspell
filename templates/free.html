@@ -145,7 +145,7 @@
                 </table>
             </div> -->
             <br><br>
-            <button onclick="location.reload();" class="btn btn-outline-primary"s>Go Back</button>
+            <button onclick="location.reload();" class="btn btn-outline-primary" s>Go Back</button>
             <br><br>
         </div>
     </div>
@@ -201,39 +201,42 @@
             return result
         }
 
-        function check(d){
+        function remove_com(str) {
+            var result = [];
+            for (var i = 0; i < str.length; i++) {
+                if (str[i].includes('.com')) {
+                    continue;
+                } else {
+                    result.push(str[i]);
+                }
+            }
+            return result
+        }
+
+        function check(d) {
             if (d.length < 4) {
                 return false;
             }
             else if (d.toLowerCase() === url) {
                 return false;
             }
-            else if (d.includes('.com') == true) {
-                return false;
-            } else if (/^[a-zA-Z0-9- ]*$/.test(d) == false){
-                return "yes";
-            }
             else if (/^\d+$/.test(d)) {
                 return false;
-            }else{
+            } else {
                 return true;
             }
         }
 
         function filter_data(data) {
             str = data.split(' ');
-            str = str.filter(entry => /\S/.test(entry));
-            str = remove_duplicates(str);
+            str = str.filter(entry => /\S/.test(entry)); // whitespace
+            str = remove_duplicates(str); // duplicates
+            str = remove_com(str);
+            str = str.toString();
+            str = str.replace(/[_\W]+/g, " ").split(" ");
             for (let i = 0; i < str.length; i++) {
                 var d = str[i];
-                f = check(d)
-                if(f == "yes") {
-                    s = d.replace(/[_\W]+/g, "");
-                    v = check(s)
-                    if (v == true){
-                        check_spell(s);
-                    }
-                }else if (f == true){
+                if (check(d) == true) {
                     check_spell(d);
                 }
             }
