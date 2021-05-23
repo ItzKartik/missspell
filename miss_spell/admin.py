@@ -1,7 +1,7 @@
 from django.contrib import admin
-from .models import dictionary
+from .models import add_text
 # Register your models here.
 # from django.models import Attachment
 
 
-admin.site.register(dictionary)
+admin.site.register(add_text)
