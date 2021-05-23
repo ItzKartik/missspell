@@ -16,7 +16,7 @@ hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML,
        'Connection': 'keep-alive'}
 
 def fetch_model():
-    m = models.data.objects.all()
+    m = models.dictionary.objects.all()
     data = serializers.serialize("json", m)
     return data
 
