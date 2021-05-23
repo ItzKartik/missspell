@@ -4,7 +4,7 @@ from django.shortcuts import render, HttpResponse
 from urllib.error import URLError
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
-from checker_app import models
+from miss_spell import models
 from django.core import serializers
 import json
 
