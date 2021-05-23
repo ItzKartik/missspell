@@ -4,6 +4,9 @@ from django.shortcuts import render, HttpResponse
 from urllib.error import URLError
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.decorators.csrf import csrf_exempt
+from checker_app import models
+from django.core import serializers
+import json
 
 hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.64 Safari/537.11',
        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -12,9 +15,14 @@ hdr = {'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.11 (KHTML,
        'Accept-Language': 'en-US,en;q=0.8',
        'Connection': 'keep-alive'}
 
-# @xframe_options_exempt
-# def index(request):
-#     return render(request, 'index.html')
+def fetch_model():
+    m = models.data.objects.all()
+    data = serializers.serialize("json", m)
+    return data
+
+@xframe_options_exempt
+def index(request):
+    return render(request, 'index.html')
 
 @xframe_options_exempt
 def account(request):
@@ -36,7 +44,11 @@ def check_spell(request):
             else:
                 soup = BeautifulSoup(data, "html.parser")
                 sentence = " ".join(soup.strings)
-            return HttpResponse(sentence)
+            data = {}
+            data['sentence'] = sentence
+            data['prev_data'] = fetch_model()
+            data = json.dumps(data, indent=4, sort_keys=True, default=str)
+            return HttpResponse(data, content_type='application/json')
         except (EOFError, KeyError):
             return HttpResponse("0")
     else:

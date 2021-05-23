@@ -20,7 +20,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
-    # path('', views.index, name='index'),
+    path('', views.index, name='index'),
     path('account/', views.account, name='account'),
     path('free/', views.free, name='free'),
     path('check_spell/', views.check_spell, name='check_spell'),

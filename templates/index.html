@@ -1,19 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Miss Spell</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.6.0.js"
-        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=Pattaya&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=KoHo" rel="stylesheet">
+{% extends 'base.html' %}
+{% block head %}
     <style>
         html,
         body {
@@ -128,24 +114,21 @@
             }
         }
     </style>
-</head>
-
-<body>
     <div class="container table_part text-center mx-auto"
         style="margin-top: 20px; margin-bottom: 0 !important; display: none;">
         <div class="text-left mr-auto">
             <p>
             <h3>Total Errors : <span class="nos" style="font-size: 3rem; color: #008cff;"></span></h3>
-            <!-- <small style="color: #008cff; font-weight: 600; font-size: 15px;">*Some results may differ for a human. My
+            <small style="color: #008cff; font-weight: 600; font-size: 15px;">*Some results may differ for a human. My
                 programming is improving with every
                 use.</small>
             <br><br><br><br>
             <div class="col-md-6 mx-auto text-left table-responsive">
                 <table class="table">
                 </table>
-            </div> -->
+            </div>
             <br><br>
-            <button onclick="location.reload();" class="btn btn-outline-primary"s>Go Back</button>
+            <button onclick="location.reload();" class="btn btn-outline-primary" s>Go Back</button>
             <br><br>
         </div>
     </div>
@@ -168,7 +151,8 @@
     <script src="https://cdn.jsdelivr.net/npm/typo-js@1.2.0/typo.min.js"></script>
     <script>
         var nos_of_errors = 0;
-        var url;
+        var url, str, sentence, prev_data;
+        var prev_arr = [];
         function make_string(arr) {
             string = '';
             for (var l = 0; l < arr.length; l++) {
@@ -181,6 +165,14 @@
             var is_spelled_correctly = dictionary.check(data);
             if (is_spelled_correctly !== true) {
                 nos_of_errors += 1;
+                var array_of_suggestions = dictionary.suggest(data);
+                if (array_of_suggestions.length == 0) {
+                    corrected = "No Suggestions Found";
+                }
+                else {
+                    corrected = make_string(array_of_suggestions);
+                }
+                $('.table').append('<tr><td>' + data + '</td><td>:</td><td>' + corrected + '</td></tr>');
                 $('.nos').html(nos_of_errors).fadeIn('slow');
             }
         }
@@ -193,26 +185,49 @@
             return result
         }
 
-        function filter_data(data) {
-            str = data.replace(/[_\W]+/g, " ");
-            str = str.replace(/[0-9]/g, " ");
-            str = str.split(' ')
-            str = remove_duplicates(str);
-            for (let i = 0; i < str.length; i++) {
-                var d = str[i];
-                if (d.length < 4) {
-                    continue;
-                }
-                else if (d.toLowerCase() === url) {
-                    continue;
-                }
-                else if (d.includes('.com') == true) {
-                    console.log(d);
-                    continue;
-                }
-                else if (/^\d+$/.test(d)) {
+        function remove_com(str) {
+            var result = [];
+            for (var i = 0; i < str.length; i++) {
+                if (str[i].includes('.com')) {
                     continue;
                 } else {
+                    result.push(str[i]);
+                }
+            }
+            return result
+        }
+
+        function check(d) {
+            if (d.length < 4) {
+                return false;
+            }
+            else if (d.toLowerCase() === url) {
+                return false;
+            }
+            else if (/^\d+$/.test(d)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function match_with_prev_data(str) {
+            var res = str.filter(item => !prev_arr.includes(item));
+            return res;
+        }
+
+        function filter_data(data) {
+            str = data.split(' ');
+            str = str.filter(entry => /\S/.test(entry)); // whitespace
+            str = remove_duplicates(str); // duplicates
+            str = remove_com(str);
+            str = str.toString();
+            str = str.replace(/[_\W]+/g, " ").split(" ");
+
+            str = match_with_prev_data(str);
+            for (let i = 0; i < str.length; i++) {
+                var d = str[i];
+                if (check(d) == true) {
                     check_spell(d);
                 }
             }
@@ -251,19 +266,30 @@
                         $('.errors').html("Invalid URL, Please Try Again...");
                     }
                     else {
-                        if (count !== 5) {
-                            url = strip_url(url);
-
-                            $('.progress-part').hide();
-                            filter_data(data);
-                            // var t = (5 - count) * 2500;
-                            // console.log("Wait for : " + t);
-                            // setTimeout(
-                            //     function () {
-                            //         $('.progress-part').hide();
-                            //         filter_data(data);
-                            //     }, parseInt(t));
+                        url = strip_url(url);
+                        $('.progress-part').hide();
+                        
+                        sentence = data['sentence'];
+                        prev_data = JSON.parse(data['prev_data']);
+                        for(var l = 0; l < prev_data.length; l++){
+                            prev_arr.push(prev_data[l]['fields']['text']);
                         }
+                        $('.table').html('<tr><td style="font-size: 1.2rem; font-weight: 800;"><b>Errors Found</b></td><td style="font-size: 1.2rem;"></td><td style="font-size: 1.2rem;"><b>Suggestions</b></td></tr>');
+                        filter_data(sentence);
+                        // if (count !== 5) {
+                        //     url = strip_url(url);
+
+                            // $('.table').html('<tr><td style="font-size: 1.2rem; font-weight: 800;"><b>Errors Found</b></td><td style="font-size: 1.2rem;"></td><td style="font-size: 1.2rem;"><b>Suggestions</b></td></tr>');
+                        //     $('.progress-part').hide();
+                        //     filter_data(data);
+                        //     // var t = (5 - count) * 2500;
+                        //     // console.log("Wait for : " + t);
+                        //     // setTimeout(
+                        //     //     function () {
+                        //     //         $('.progress-part').hide();
+                        //     //         filter_data(data);
+                        //     //     }, parseInt(t));
+                        // }
                     }
                 },
                 error: function (data) {
@@ -296,6 +322,4 @@
             }, 2000);
         }
     </script>
-</body>
-
-</html>
+{% endblock %}
